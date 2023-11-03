@@ -261,7 +261,7 @@ class GenELMClassifier(BaseELM, ClassifierMixin):
     """
     def __init__(self,
                  hidden_layer=MLPRandomLayer(random_state=0),
-                 binarizer=LabelBinarizer(-1, 1),
+                 binarizer=LabelBinarizer(neg_label=-1, pos_label=1),
                  regressor=None):
 
         super(GenELMClassifier, self).__init__(hidden_layer, regressor)
@@ -532,7 +532,7 @@ class ELMClassifier(ELMRegressor):
     def __init__(self, n_hidden=20, alpha=0.5, rbf_width=1.0,
                  activation_func='tanh', activation_args=None,
                  user_components=None, regressor=None,
-                 binarizer=LabelBinarizer(-1, 1),
+                 binarizer=LabelBinarizer(neg_label=-1, pos_label=1),
                  random_state=None):
 
         super(ELMClassifier, self).__init__(n_hidden=n_hidden,
