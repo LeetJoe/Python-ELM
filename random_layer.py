@@ -311,7 +311,7 @@ class RandomLayer(BaseRandomLayer):
             n_features = X.shape[1]
 
             if (sparse):
-                fxr = xrange(n_features)
+                fxr = range(n_features)
                 cols = [X.getcol(i) for i in fxr]
 
                 min_dtype = X.dtype.type(1.0e10)

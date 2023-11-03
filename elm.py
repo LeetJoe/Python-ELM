@@ -24,7 +24,7 @@ References
 from abc import ABCMeta, abstractmethod
 
 import numpy as np
-from scipy.linalg import pinv2
+from scipy.linalg import pinv
 
 from sklearn.utils import as_float_array
 from sklearn.utils.extmath import safe_sparse_dot
@@ -150,7 +150,7 @@ class GenELMRegressor(BaseELM, RegressorMixin):
         or supplied regressor
         """
         if (self.regressor is None):
-            self.coefs_ = safe_sparse_dot(pinv2(self.hidden_activations_), y)
+            self.coefs_ = safe_sparse_dot(pinv(self.hidden_activations_), y)
         else:
             self.regressor.fit(self.hidden_activations_, y)
 
