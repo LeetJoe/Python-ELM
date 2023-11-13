@@ -6,6 +6,7 @@ data
 *.so
 
 # Packages
+sc_*
 *.egg
 *.egg-info
 dist
