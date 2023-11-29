@@ -1,6 +1,7 @@
 *.py[cod]
 .idea
 data/result.csv
+data/*000.csv
 
 # C extensions
 *.so

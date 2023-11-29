@@ -42,7 +42,7 @@ idx_outliers = dus.idx_outlier(X_clip[:50000, :], ol_percent)
 X_dense = np.delete(X_clip[:50000, :], idx_outliers, 0)
 y_dense = np.delete(y[:50000], idx_outliers, 0)
 
-hn = 1000
+hn = 8000
 sig_rl = MLPRandomLayer(n_hidden=hn, activation_func=act_func)
 clf = GenELMClassifier(hidden_layer=sig_rl)
 
@@ -52,5 +52,5 @@ score = np.round(clf.score(X_dense, y_dense)*100, 2)
 c_time = np.round(time.time() - s_time, 2)
 print("func: {}, hn: {}, score: {}, time: {}".format('sigmoid', hn, score, c_time))
 
-pred_save(clf, idx_clip, 'data/dataA_test.csv', 'data/predictA.csv')
-pred_save(clf, idx_clip, 'data/dataB_test.csv', 'data/predictB.csv')
+pred_save(clf, idx_clip, 'data/dataA_test.csv', 'data/predictA_{}.csv'.format(hn))
+pred_save(clf, idx_clip, 'data/dataB_test.csv', 'data/predictB_{}.csv'.format(hn))
