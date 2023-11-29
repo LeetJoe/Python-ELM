@@ -21,7 +21,7 @@ X = dus.normalize(X)
 data_group = {'original': (X, y)}
 
 # clip
-idx_clip = dus.clip_list(X, ps_thresh)
+idx_clip = dus.clip_list(X, y, ps_thresh)
 X_clip = np.delete(X, idx_clip, 1)
 data_group['clip'] = (X_clip, y)
 
@@ -44,6 +44,7 @@ for hn in hn_list:
     for dk in data_group:
         clf = GenELMClassifier(hidden_layer=sig_rl)
         cur_X, cur_y = data_group[dk]
+        print('Start training with {} hidden nodes...'.format(hn))
         s_time = time.time()
         clf.fit(cur_X, cur_y)
         score = np.round(clf.score(cur_X, cur_y)*100, 2)

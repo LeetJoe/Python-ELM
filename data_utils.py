@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
@@ -25,19 +26,14 @@ def pearsonr(x, y):
     return r
 
 
-def clip_list(data, thresh=0.05):
-    X = data[:, 1:-1]
-    y = data[:, -1]
-
-    nrow, ncol = X.shape
-
-    score_ps = np.array([pearsonr(X[:, i], y) for i in range(ncol)])
+def clip_list(x, y, thresh=0.05):
+    score_ps = np.array([pearsonr(x[:, i], y) for i in range(len(x[0]))])
 
     idx_no_ps = np.argwhere(np.abs(score_ps) < thresh)
     idx_no_ps = idx_no_ps.reshape(len(idx_no_ps))
 
     # spearman
-    score_spr = np.array([stats.spearmanr(X[:, i], y)[0] for i in range(ncol)])
+    score_spr = np.array([stats.spearmanr(x[:, i], y)[0] for i in range(len(x[0]))])
 
     idx_no_spr = np.argwhere(np.abs(score_spr) < thresh)
     idx_no_spr = idx_no_spr.reshape(len(idx_no_spr))
@@ -63,4 +59,12 @@ def idx_outlier(x, percent=0.1):
 
     return np.argsort(x_norm)[-num:]
 
+
+def auc_test(fmodel, data_file, test_step=1000):
+    with open(fmodel, 'rb') as fi:
+        model_loaded = pickle.load(fi)
+        clf = model_loaded['model']
+        print('Model loaded from {}.'.format(fmodel))
+
+    data = np.loadtxt('data/dataTrain_test.csv', dtype=np.float64, delimiter=',', unpack=False)
 

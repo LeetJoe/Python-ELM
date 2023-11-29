@@ -41,7 +41,7 @@ y = data[:, -1]
 # normalization
 X = dus.normalize(X)
 
-idx_clip = dus.clip_list(X, ps_thresh)
+idx_clip = dus.clip_list(X, y, ps_thresh)
 X_clip = np.delete(X, idx_clip, 1)
 idx_outliers = dus.idx_outlier(X_clip[:50000, :], ol_percent)
 X_dense = np.delete(X_clip[:50000, :], idx_outliers, 0)
@@ -70,6 +70,7 @@ if load_model:
 else:
     sig_rl = MLPRandomLayer(n_hidden=hn, activation_func=act_func)
     clf = GenELMClassifier(hidden_layer=sig_rl)
+    print('Start training with {} hidden nodes...'.format(hn))
     clf.fit(X_dense, y_dense)
 
 score = np.round(clf.score(X_dense, y_dense)*100, 2)
