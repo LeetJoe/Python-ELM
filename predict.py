@@ -47,6 +47,15 @@ idx_outliers = dus.idx_outlier(X_clip[:50000, :], ol_percent)
 X_dense = np.delete(X_clip[:50000, :], idx_outliers, 0)
 y_dense = np.delete(y[:50000], idx_outliers, 0)
 
+params = {
+    'ps': ps_thresh,
+    'ol': ol_percent,
+    'f': act_func,
+    'hn': hn,
+    'clip': idx_clip,
+    'idol': idx_outliers,
+    'auc': []
+}
 model_file = 'data/model_{}.sav'.format(hn)
 
 s_time = time.time()
@@ -55,7 +64,8 @@ if load_model:
         print('Error! Model file {} not found.'.format(model_file))
         exit(-1)
     with open(model_file, 'rb') as fi:
-        clf = pickle.load(fi)
+        model_loaded = pickle.load(fi)
+        clf = model_loaded['model']
         print('Model loaded from {}.'.format(model_file))
 else:
     sig_rl = MLPRandomLayer(n_hidden=hn, activation_func=act_func)
@@ -68,7 +78,7 @@ print("func: {}, hn: {}, score: {}, time: {}".format('sigmoid', hn, score, c_tim
 
 if (not load_model) and save_model:
     with open(model_file, 'wb') as fo:
-        pickle.dump(clf, fo)
+        pickle.dump({'model': clf, 'params': params}, fo)
     print('Saved model into {}...'.format(model_file))
 
 pred_save(clf, idx_clip, 'data/dataA_test.csv', 'data/predictA_{}.csv'.format(hn))
