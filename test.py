@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import time
-import gc
 import numpy as np
 import data_utils as dus
 from elm import GenELMClassifier
@@ -50,8 +49,6 @@ for hn in hn_list:
         c_time = np.round(time.time() - s_time, 2)
         result.append(['sigmoid', hn, dk, score, c_time])
         print("func: {}, hn: {}, data: {}, score: {}, time: {}".format('sigmoid', hn, dk, score, c_time))
-        del clf
-        gc.collect()
 
 with open('data/result.csv', 'w') as fo:
     for r in result:
