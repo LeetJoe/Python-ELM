@@ -50,21 +50,58 @@ def normalize(x):
     return x
 
 
-def idx_outlier(x, percent=0.1):
-    x_mean = np.mean(x, axis=0)
-    x -= x_mean
-    x_norm = np.linalg.norm(x, axis=1)
+def idx_outlier(x, idc, percent=0.1, auc_idx=34000):
+    nl_data = np.loadtxt('data/dataNoLabel_test.csv', dtype=np.float64, delimiter=',', unpack=False)
+    nl_data = np.delete(nl_data, idc, 1)
+    x_mean = np.mean(normalize(nl_data[:auc_idx, 1:]), axis=0)
+    lx = x - x_mean
+    x_norm = np.linalg.norm(lx, axis=1)
 
-    num = int(np.floor(len(x)*percent))
+    num = int(np.floor(len(lx)*percent))
 
     return np.argsort(x_norm)[-num:]
 
 
-def auc_test(fmodel, data_file, test_step=1000):
+def auc_test(fmodel, data_file, test_step=1000, no_label=False):
+    """
+    auc of no label data changed after index 34000 from ~0.19 to ~0.25, so we choose 0~33999 rows of no label data;
+    auc of train data changed after index 50000 from ~0.2 to ~0.47, so we drop data out of 50000 rows.
+    """
     with open(fmodel, 'rb') as fi:
         model_loaded = pickle.load(fi)
         clf = model_loaded['model']
+        params = model_loaded['params']
         print('Model loaded from {}.'.format(fmodel))
 
-    data = np.loadtxt('data/dataTrain_test.csv', dtype=np.float64, delimiter=',', unpack=False)
+    data = np.loadtxt(data_file, dtype=np.float64, delimiter=',', unpack=False)
 
+    # X = data[:, 1:-1]
+    # y = data[:, -1]
+    if no_label:
+        X = data[:, 1:]
+        y = data[:, 1]
+    else:
+        X = data[:, 1:-1]
+        y = data[:, -1]
+
+    X = normalize(X)
+    X = np.delete(X, params['clip'], 1)
+
+    nrows, ncols = X.shape
+
+    i = 0
+    while i < nrows:
+        e = min(i + test_step, nrows)
+        y_pred = clf.predict(X[i:e, :])
+        auc = np.round(np.sum(y_pred) / min(test_step, e - i), 2)
+        if no_label:
+            print('{}~{}, auc: {}'.format(i, e, auc))
+        else:
+            y_scr = clf.score(X[i:e, :], y[i:e])
+            print('{}~{}, score: {}, auc: {}'.format(i, e, np.round(y_scr, 4), auc))
+
+        i = e
+
+
+# auc_test('data/model_8000.sav', 'data/dataNoLabel_test.csv', no_label=True)
+# auc_test('data/model_8000.sav', 'data/dataTrain_test.csv')

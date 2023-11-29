@@ -29,9 +29,10 @@ def pred_save(model, col_clip, in_file, out_file):
 ps_thresh = 0.01  # pearson rate & spearman rate threshold
 ol_percent = 0.1  # outlier percentage
 act_func = 'sigmoid'
+auc_train = 50000
 hn = 8000
 save_model = False
-load_model = True
+load_model = False
 
 data = np.loadtxt('data/dataTrain_test.csv', dtype=np.float64, delimiter=',', unpack=False)
 
@@ -43,9 +44,9 @@ X = dus.normalize(X)
 
 idx_clip = dus.clip_list(X, y, ps_thresh)
 X_clip = np.delete(X, idx_clip, 1)
-idx_outliers = dus.idx_outlier(X_clip[:50000, :], ol_percent)
-X_dense = np.delete(X_clip[:50000, :], idx_outliers, 0)
-y_dense = np.delete(y[:50000], idx_outliers, 0)
+idx_outliers = dus.idx_outlier(X_clip[:auc_train, :], idx_clip, ol_percent)
+X_dense = np.delete(X_clip[:auc_train, :], idx_outliers, 0)
+y_dense = np.delete(y[:auc_train], idx_outliers, 0)
 
 params = {
     'ps': ps_thresh,
@@ -54,7 +55,7 @@ params = {
     'hn': hn,
     'clip': idx_clip,
     'idol': idx_outliers,
-    'auc': []
+    'auct': auc_train
 }
 model_file = 'data/model_{}.sav'.format(hn)
 
