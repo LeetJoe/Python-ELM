@@ -20,15 +20,16 @@ X = dus.normalize(X)
 
 data_group = {'original': (X, y)}
 
-# 
+# clip
 idx_clip = dus.clip_list(X, ps_thresh)
 X_clip = np.delete(X, idx_clip, 1)
 data_group['clip'] = (X_clip, y)
 
-# todo AUC filter
+# todo AUC filter: filter_1
 data_group['filter'] = (X[:50000, :], y[:50000])
 data_group['clip&filter'] = (X_clip[:50000, :], y[:50000])
 
+# outlier filter: filter_2
 idx_outliers = dus.idx_outlier(X_clip[:50000, :], ol_percent)
 X_dense = np.delete(X_clip[:50000, :], idx_outliers, 0)
 y_dense = np.delete(y[:50000], idx_outliers, 0)
@@ -36,7 +37,7 @@ data_group['dense'] = (X_dense, y_dense)
 
 result = [['func', 'h-num', 'data', 'score', 'time']]
 
-hn_list = [500, 1000, 2000, 4000, 8000, 10000]
+hn_list = [1000, 2000, 4000, 8000, 10000]
 
 for hn in hn_list:
     sig_rl = MLPRandomLayer(n_hidden=hn, activation_func=act_func)
