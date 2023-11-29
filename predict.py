@@ -31,7 +31,7 @@ ol_percent = 0.1  # outlier percentage
 act_func = 'sigmoid'
 hn = 8000
 save_model = False
-load_model = False
+load_model = True
 
 data = np.loadtxt('data/dataTrain_test.csv', dtype=np.float64, delimiter=',', unpack=False)
 
@@ -81,5 +81,12 @@ if (not load_model) and save_model:
         pickle.dump({'model': clf, 'params': params}, fo)
     print('Saved model into {}...'.format(model_file))
 
-pred_save(clf, idx_clip, 'data/dataA_test.csv', 'data/predictA_{}.csv'.format(hn))
+print('Predicting data A...')
+result_file_A = 'data/predictA_{}.csv'.format(hn)
+pred_save(clf, idx_clip, 'data/dataA_test.csv', result_file_A)
+print('Predict result of data A saved in {}.'.format(result_file_A))
+
+print('Predicting data B...')
+result_file_B = 'data/predictB_{}.csv'.format(hn)
 pred_save(clf, idx_clip, 'data/dataB_test.csv', 'data/predictB_{}.csv'.format(hn))
+print('Predict result of data B saved in {}.'.format(result_file_A))
