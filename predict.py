@@ -27,10 +27,10 @@ def pred_save(model, col_clip, in_file, out_file):
 
 
 ps_thresh = 0.01  # pearson rate & spearman rate threshold
-ol_percent = 0.1  # outlier percentage
+ol_percent = 0.1  # outlier percentage: we predict there were 10% noise data randomly mixed in the train data
 act_func = 'sigmoid'
 auc_train = 50000
-hn = 8000
+hn = 8000  # 100000 will be better
 save_model = False
 load_model = False
 

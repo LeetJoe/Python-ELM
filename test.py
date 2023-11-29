@@ -7,7 +7,7 @@ from elm import GenELMClassifier
 from random_layer import MLPRandomLayer
 
 ps_thresh = 0.01  # pearson rate & spearman rate threshold
-ol_percent = 0.1  # outlier percentage
+ol_percent = 0.1  # outlier percentage: we predict there were 10% noise data randomly mixed in the train data
 act_func = 'sigmoid'
 auc_train = 50000
 
